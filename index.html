@@ -1,57 +1,235 @@
 <!DOCTYPE html>
-<html style="background-color: black;color: #FFF;">
-
+<html lang="zh-CN">
 <head>
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-    <link rel="shortcut icon" href="favicon.ico" />
-    <title>YUYUANHONG</title>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>冰封炫雨的个人主页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #0f0f0f;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://images4.alphacoders.com/139/thumb-1920-1392617.png');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 800px;
+            padding: 60px 40px;
+            border-radius: 20px;
+            animation: fadeIn 2s ease-out;
+        }
+
+        h1 {
+            font-size: 3.7rem;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            opacity: 1;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: transparent;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::after {
+            left: 100%;
+        }
+
+        /* 星星效果 */
+        .stars-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background:  rgb(100, 200, 217);
+            border-radius: 50%;
+            opacity: 0;
+            box-shadow: 0 0 6px 2px rgb(100, 200, 217);
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+        }
+
+        /* 修改为纯淡入效果，无位置移动 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 3.0rem;
+            }
+
+            h3 {
+                font-size: 1.2rem;
+            }
+
+            .btn {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 3.2rem;
+            }
+
+            h3 {
+                font-size: 1rem;
+            }
+
+            .container {
+                padding: 40px 20px;
+            }
+        }
+    </style>
 </head>
-<style>
-    html,
-    html>*,
-    body,
-    iframe {
-        color: #D7D7D7;
-        font-size: 17px;
-        user-select: none !important;
-        text-rendering: optimizelegibility;
-        padding: 0;
-        margin: 0;
-        text-decoration: none;
-        word-wrap: break-word;
-        word-break: break-word;
-        scrollbar-width: none;
-        scrollbar-color: #ffffff;
-        width: 100%;
-        height: 100%;
-        min-width: 100%;
-        min-height: 100%;
-        max-width: 100%;
-        max-height: 100%;
-        scrollbar-color: #ffffff #0000;
-        border: none;
-        overflow: hidden;
-    }
-
-    ::-webkit-scrollbar-track {
-        -webkit-box-shadow: inset 0 0 7px #0000;
-        background-color: #0000;
-    }
-
-    ::-webkit-scrollbar {
-        width: 7px;
-        display: none;
-        background-color: #0000;
-    }
-
-    ::-webkit-scrollbar-thumb {
-        background-color: #202020;
-    }
-</style>
-
 <body>
-    <iframe src="https//:yuyuanhong.cn" frameborder="0"></iframe>
-</body>
+    <div class="stars-container" id="starsContainer"></div>
 
+    <div class="container">
+        <h1>冰封炫雨 • Github</h1>
+        <h3>想了解更多 请访问</h3>
+        <P style="margin-top: 0px;position: 0px;">︾</P>
+        <a href="https://yuyuanhong.cn" class="btn">我的主页</a>
+    </div>
+
+    <script>
+        // 创建闪烁星星
+        document.addEventListener('DOMContentLoaded', function() {
+            const starsContainer = document.getElementById('starsContainer');
+            const starsCount = 50; // 星星数量
+
+            // 创建星星
+            for (let i = 0; i < starsCount; i++) {
+                createStar();
+            }
+
+            // 定期创建新星星
+            setInterval(createStar, 137);
+
+            function createStar() {
+                const star = document.createElement('div');
+                star.classList.add('star');
+
+                // 随机位置
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                star.style.left = `${left}%`;
+                star.style.top = `${top}%`;
+
+                // 随机大小
+                const size = Math.random() * 2 + 1;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+
+                // 随机动画延迟和持续时间
+                const delay = Math.random() * 5;
+                const duration = Math.random() * 2 + 2;
+                star.style.animationDelay = `${delay}s`;
+                star.style.animationDuration = `${duration}s`;
+
+                starsContainer.appendChild(star);
+
+                // 动画结束后移除星星
+                setTimeout(() => {
+                    if (star.parentNode) {
+                        star.parentNode.removeChild(star);
+                    }
+                }, (delay + duration) * 1000);
+            }
+        });
+    </script>
+</body>
 </html>
