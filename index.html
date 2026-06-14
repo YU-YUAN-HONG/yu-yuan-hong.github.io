@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>一句话</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            transition: background-image 0.5s ease;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0,0.57);
+            z-index: 1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 2rem;
+            max-width: 85%;
+        }
+
+        .hitokoto {
+            font-size: 1.8rem;
+            line-height: 1.6;
+            color: #fff;
+            text-shadow: 
+                0 0 8px rgba(0, 0, 0),
+                1px 1px 4px rgba(0, 0, 0),
+                2px 2px 6px rgba(0, 0, 0);
+            font-family: 'Georgia', 'Times New Roman', '宋体', serif;
+            font-weight: normal;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .from {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255);
+            text-shadow: 
+                0 0 8px rgba(0, 0, 0),
+                1px 1px 4px rgba(0, 0, 0),
+                2px 2px 6px rgba(0, 0, 0);
+            font-family: 'Arial', sans-serif;
+        }
+
+        .dot {
+            position: fixed;
+            bottom: 7px;
+            right: 17px;
+            color: rgba(255, 255, 255);
+            background: rgba(255, 255, 255,0);
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hitokoto" id="hitokoto">正在加载 请稍等片刻</div>
+        <div class="from" id="from"></div>
+    </div>
+    <div class="dot">•</div>
+
+    <script>
+        // 随机背景图（picsum.photos 稳定免费）
+        const bgImages = [
+            'https://picsum.photos/1920/1080?random=1',
+            'https://picsum.photos/1920/1080?random=2',
+            'https://picsum.photos/1920/1080?random=3',
+            'https://picsum.photos/1920/1080?random=4',
+            'https://picsum.photos/1920/1080?random=5'
+        ];
+        
+        const randomBg = bgImages[Math.floor(Math.random() * bgImages.length)];
+        document.body.style.backgroundImage = `url('${randomBg}')`;
+        
+        // 一言 API 调用
+        function fetchHitokoto() {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
+            
+            fetch('https://v1.hitokoto.cn', { signal: controller.signal })
+                .then(response => response.json())
+                .then(data => {
+                    clearTimeout(timeoutId);
+                    const hitokotoEl = document.getElementById('hitokoto');
+                    hitokotoEl.innerText = `「 ${data.hitokoto} 」`;
+                    
+                    if (data.from) {
+                        const fromEl = document.getElementById('from');
+                        fromEl.innerText = `—— ${data.from}`;
+                    }
+                })
+                .catch(err => {
+                    clearTimeout(timeoutId);
+                    // 备用句子库
+                    const fallbackSentences = [
+                        { text: "静坐常思己过，闲谈莫论人非。", from: "古训" },
+                        { text: "此心安处是吾乡。", from: "苏轼" },
+                        { text: "行到水穷处，坐看云起时。", from: "王维" },
+                        { text: "明月松间照，清泉石上流。", from: "王维" },
+                        { text: "本来无一物，何处惹尘埃。", from: "六祖慧能" }
+                    ];
+                    const random = fallbackSentences[Math.floor(Math.random() * fallbackSentences.length)];
+                    document.getElementById('hitokoto').innerText = `「 ${random.text} 」`;
+                    document.getElementById('from').innerText = `—— ${random.from}`;
+                });
+        }
+        
+        fetchHitokoto();
+    </script>
+</body>
+</html>
