@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,7 +32,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0,0.57);
+            background: rgba(0, 0, 0, 0.57);
             z-index: 1;
         }
 
@@ -47,7 +48,7 @@
             font-size: 1.8rem;
             line-height: 1.6;
             color: #fff;
-            text-shadow: 
+            text-shadow:
                 0 0 8px rgba(0, 0, 0),
                 1px 1px 4px rgba(0, 0, 0),
                 2px 2px 6px rgba(0, 0, 0);
@@ -60,7 +61,7 @@
         .from {
             font-size: 0.95rem;
             color: rgba(255, 255, 255);
-            text-shadow: 
+            text-shadow:
                 0 0 8px rgba(0, 0, 0),
                 1px 1px 4px rgba(0, 0, 0),
                 2px 2px 6px rgba(0, 0, 0);
@@ -72,11 +73,12 @@
             bottom: 7px;
             right: 17px;
             color: rgba(255, 255, 255);
-            background: rgba(255, 255, 255,0);
+            background: rgba(255, 255, 255, 0);
             z-index: 2;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="hitokoto" id="hitokoto">正在加载 请稍等片刻</div>
@@ -85,52 +87,43 @@
     <div class="dot">•</div>
 
     <script>
-        // 随机背景图（picsum.photos 稳定免费）
-        const bgImages = [
-            'https://picsum.photos/1920/1080?random=1',
-            'https://picsum.photos/1920/1080?random=2',
-            'https://picsum.photos/1920/1080?random=3',
-            'https://picsum.photos/1920/1080?random=4',
-            'https://picsum.photos/1920/1080?random=5'
-        ];
-        
-        const randomBg = bgImages[Math.floor(Math.random() * bgImages.length)];
-        document.body.style.backgroundImage = `url('${randomBg}')`;
-        
-        // 一言 API 调用
+        // 随机背景图（不处理失败）
+        const bgUrl = 'https://www.yumus.cn/api/?target=img&brand=bing&ua=pc';
+        document.body.style.backgroundImage = `url('${bgUrl}&t=' + Date.now())`;
+
+        // 过滤 script 标签的函数
+        function removeScriptTags(str) {
+            return str.replaceAll('script', '');
+        }
+
+        // 一言 API 调用（不处理失败，但过滤 script 标签）
         function fetchHitokoto() {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 5000);
-            
-            fetch('https://v1.hitokoto.cn', { signal: controller.signal })
+            fetch('https://v1.hitokoto.cn')
                 .then(response => response.json())
                 .then(data => {
-                    clearTimeout(timeoutId);
+                    let text = data.hitokoto || '';
+                    let from = data.from || '';
+
+                    // 过滤 script 标签
+                    text = removeScriptTags(text);
+                    from = removeScriptTags(from);
+
                     const hitokotoEl = document.getElementById('hitokoto');
-                    hitokotoEl.innerText = `「 ${data.hitokoto} 」`;
-                    
-                    if (data.from) {
+                    hitokotoEl.innerText = text ? `「 ${text} 」` : '';
+
+                    if (from) {
                         const fromEl = document.getElementById('from');
-                        fromEl.innerText = `—— ${data.from}`;
+                        fromEl.innerText = `—— ${from}`;
                     }
                 })
                 .catch(err => {
-                    clearTimeout(timeoutId);
-                    // 备用句子库
-                    const fallbackSentences = [
-                        { text: "静坐常思己过，闲谈莫论人非。", from: "古训" },
-                        { text: "此心安处是吾乡。", from: "苏轼" },
-                        { text: "行到水穷处，坐看云起时。", from: "王维" },
-                        { text: "明月松间照，清泉石上流。", from: "王维" },
-                        { text: "本来无一物，何处惹尘埃。", from: "六祖慧能" }
-                    ];
-                    const random = fallbackSentences[Math.floor(Math.random() * fallbackSentences.length)];
-                    document.getElementById('hitokoto').innerText = `「 ${random.text} 」`;
-                    document.getElementById('from').innerText = `—— ${random.from}`;
+                    // 不处理失败，什么都不做
+                    console.log(err);
                 });
         }
-        
+
         fetchHitokoto();
     </script>
 </body>
+
 </html>
