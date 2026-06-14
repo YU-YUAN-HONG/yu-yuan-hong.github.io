@@ -87,16 +87,16 @@
     <div class="dot">•</div>
 
     <script>
-        // 随机背景图（不处理失败）
+
         const bgUrl = 'https://www.yumus.cn/api/?target=img&brand=bing&ua=pc';
         document.body.style.backgroundImage = `url('${bgUrl}&t=' + Date.now())`;
 
-        // 过滤 script 标签的函数
+
         function removeScriptTags(str) {
             return str.replaceAll('script', '');
         }
 
-        // 一言 API 调用（不处理失败，但过滤 script 标签）
+
         function fetchHitokoto() {
             fetch('https://v1.hitokoto.cn')
                 .then(response => response.json())
@@ -104,7 +104,6 @@
                     let text = data.hitokoto || '';
                     let from = data.from || '';
 
-                    // 过滤 script 标签
                     text = removeScriptTags(text);
                     from = removeScriptTags(from);
 
@@ -117,7 +116,6 @@
                     }
                 })
                 .catch(err => {
-                    // 不处理失败，什么都不做
                     console.log(err);
                 });
         }
